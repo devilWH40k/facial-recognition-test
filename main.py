@@ -1,4 +1,4 @@
-# import tqdm
+import tqdm
 import pandas as pd
 from deepface import DeepFace
 
@@ -27,33 +27,43 @@ def get_label(file1: str, file2: str) -> int:
     return int(_get_name(file1) == _get_name(file2))
 
 
-def evaluate_pipeline(
-    pipeline, 
+def evaluate_model(
+    model, 
     data, 
 ) -> pd.DataFrame:
 
+    print("evaluating", model, "...")
     scores = []
     labels = []
 
     for file1, file2 in tqdm.tqdm(data, total=len(data)):
-        similarity = pipeline(file1, file2)
-        label = get_label(file1, file2)
-        scores.append(similarity)
-        labels.append(label)
+        result = DeepFace.verify(
+            img1_path=file1,
+            img2_path=file2,
+            distance_metric="cosine",
+            model_name=model
+        )
+        print("similarity:", result["distance"])
+        # need similarity here
+        # label = get_label(file1, file2)
+        # scores.append(similarity)
+        # labels.append(label)
 
-    ee_rate, thresh, fa_rate, fr_rate = compute_eer(scores, labels)
-    min_dcf = compute_min_dcf(fr_rate, fa_rate)
-    fa_score, fr_score = compute_far_frr(scores, labels, thresh)
+    print("finished...")
 
-    result = {
-        "pipeline": pipeline.name,
-        "fa_score": fa_score,
-        "fr_score": fr_score,
-        "ee_rate": ee_rate,
-        "dcf": min_dcf, 
-        "threshold": thresh,
-    }
-    return result
+    # ee_rate, thresh, fa_rate, fr_rate = compute_eer(scores, labels)
+    # min_dcf = compute_min_dcf(fr_rate, fa_rate)
+    # fa_score, fr_score = compute_far_frr(scores, labels, thresh)
+
+    # result = {
+    #     "pipeline": pipeline.name,
+    #     "fa_score": fa_score,
+    #     "fr_score": fr_score,
+    #     "ee_rate": ee_rate,
+    #     "dcf": min_dcf, 
+    #     "threshold": thresh,
+    # }
+    # return result
 
 
 def main():
@@ -76,8 +86,7 @@ def main():
     ]
 
     for model in models:
-        embedding_objs = DeepFace.represent(img_path = dataset[0][0], model_name = model)
-        print(model, embedding_objs[0]["facial_area"])
+        evaluate_model(model, dataset[:3])
 
     # results = {}
 

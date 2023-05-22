@@ -5,4 +5,4 @@ pretrained_models/
 *.pyo
 *.pyc
 Pipfile
-
+dataset.obj
