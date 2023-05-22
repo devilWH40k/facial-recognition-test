@@ -1,18 +1,19 @@
-import tqdm
+# import tqdm
 import pandas as pd
+from deepface import DeepFace
 
-from core import (
-    Pipeline,
-    Pyannote,
-    WavLM,
-    TitaNet,
-    Ecapa
-)
-from core.metrics import (
-    compute_eer, 
-    compute_min_dcf,
-    compute_far_frr,
-)
+# from core import (
+#     Pipeline,
+#     Pyannote,
+#     WavLM,
+#     TitaNet,
+#     Ecapa
+# )
+# from core.metrics import (
+#     compute_eer, 
+#     compute_min_dcf,
+#     compute_far_frr,
+# )
 from utils import make_dataset
 
 
@@ -60,25 +61,34 @@ def main():
     dataset = make_dataset("./dataset")
     print(f"Number of pairs in dataset: {len(dataset)}")
 
-    # Define pipelines
-    pipelines = [
-        Pipeline("pyannote", Pyannote()),
-        Pipeline("wavlm-base", WavLM(device="cuda")),
-        Pipeline("titanet", TitaNet()),
-        Pipeline("ecapa", Ecapa()),
-        # Pipeline("wavlm-large", WavLM("microsoft/wavlm-large", device="cpu")),
+    # print(dataset[:40])
+
+    # Define models
+    models = [
+        "VGG-Face", 
+        "Facenet", 
+        "Facenet512", 
+        "OpenFace", 
+        "DeepFace", 
+        "DeepID", 
+        "ArcFace", 
+        "SFace",
     ]
 
-    results = {}
+    for model in models:
+        embedding_objs = DeepFace.represent(img_path = dataset[0][0], model_name = model)
+        print(model, embedding_objs[0]["facial_area"])
 
-    for pipeline in pipelines:
-        print(f"Evaluating pipeline: {pipeline.name}")
-        results[pipeline.name] = evaluate_pipeline(pipeline, dataset)
+    # results = {}
+
+    # for pipeline in pipelines:
+    #     print(f"Evaluating pipeline: {pipeline.name}")
+    #     results[pipeline.name] = evaluate_pipeline(pipeline, dataset)
     
-    # Store resutls in a csv file
-    pd.DataFrame(results).transpose().to_csv("scores.csv")
+    # # Store resutls in a csv file
+    # pd.DataFrame(results).transpose().to_csv("scores.csv")
 
-    print("Done!")
+    # print("Done!")
 
 
 if __name__ == "__main__":

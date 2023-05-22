@@ -2,13 +2,21 @@ import os
 import glob
 from typing import List, Tuple
 
-from utils import generate_speakers_file_pairs
+from utils import generate_persons_photo_pairs
 
 
 def make_dataset(dataset_dir: str) -> List[Tuple[str, str]]:
     # Get speaker to samples map
-    speakers = glob.glob(os.path.join(dataset_dir, "*"))
-    speaker_to_samples_dict = { s: glob.glob(os.path.join(s, "*.wav")) for s in speakers }
-    # Generate datasets for evaluation for each speaker
-    dataset = generate_speakers_file_pairs(speaker_to_samples_dict)
+    persons = glob.glob(os.path.join(dataset_dir, "*"))
+
+    extensions = ["*.jpg", "*.png", "*.jpeg", "*.jfif"]
+    persons_to_samples_dict = {}
+    for p in persons:
+        files = []
+        for ext in extensions:
+            files.extend(glob.glob(os.path.join(p, ext)))
+        persons_to_samples_dict[p] = files
+
+    # Generate datasets for evaluation for each person
+    dataset = generate_persons_photo_pairs(persons_to_samples_dict)
     return dataset

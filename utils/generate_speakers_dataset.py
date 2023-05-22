@@ -3,7 +3,7 @@ import itertools
 from typing import List, Tuple
 
 
-def one_speaker_pairs(x: list):
+def one_person_pairs(x: list):
     pairs = []
     for pair in itertools.permutations(x, r=2):
         if pair[::-1] not in pairs:
@@ -17,7 +17,7 @@ def generate_speakers_dataset(speaker_to_samples_dict: dict):
 
     for k, v in speaker_to_samples_dict.items():
         # Get permutations of the same speaker files
-        same_files = one_speaker_pairs(v)
+        same_files = one_person_pairs(v)
         # Get random files from other speakers
         other_files = []
         for _k, _v in speaker_to_samples_dict.items():
@@ -37,27 +37,24 @@ def generate_speakers_dataset(speaker_to_samples_dict: dict):
     return speaker_to_subset_dict
 
 
-def generate_speakers_file_pairs(speaker_to_samples_dict: dict) -> List[Tuple[str, str]]:
+def generate_persons_photo_pairs(persons_to_samples_dict: dict) -> List[Tuple[str, str]]:
     pairs = []
 
-    for k, v in speaker_to_samples_dict.items():
+    for person, photos in persons_to_samples_dict.items():
         
-        # Get pairs of same speakers
-        same_speaker_pairs = one_speaker_pairs(v)
+        # Get pairs of same person
+        same_person_pairs = one_person_pairs(photos)
 
-        # Get pairs of different speakers, but the same number as the same speakers
+        # Get pairs of different persons
         diff_speaker_pairs = []
-        for _k, _v in speaker_to_samples_dict.items():
-            if _k == k:
+        for another_person, another_photos in persons_to_samples_dict.items():
+            if person == another_person:
                 continue
-            diff_speaker_pairs += _v
+            photo = random.choice(photos)
+            another_photo = random.choice(another_photos)
+            diff_speaker_pairs.append((photo, another_photo))
         
-        _target = random.choices(v, k=len(same_speaker_pairs))
-        _other = random.choices(diff_speaker_pairs, k=len(same_speaker_pairs))
-        diff_speaker_pairs = list(zip(_target, _other))
-
-        # Extend pairs
-        pairs.extend(same_speaker_pairs)
+        pairs.extend(same_person_pairs)
         pairs.extend(diff_speaker_pairs)
 
     return pairs
