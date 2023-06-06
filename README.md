@@ -2,6 +2,8 @@
 
 Project created in research purposes to evaluate a couple of face recognition models on given dataset.
 
+My dataset is available **[here][dataset]**.
+
 ## Setup
 ---
 
@@ -37,3 +39,5 @@ The output of the program will be a table in the console,
 containing all experiments scores and information.
 
 **NOTE**: script also creates a "dataset.obj" file for caching a result of generated dataset pairs, so if you want to update the pairs simply delete this file.
+
+[dataset]: https://huggingface.co/datasets/DeviL1337/face_recognition_52
