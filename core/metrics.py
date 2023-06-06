@@ -96,4 +96,5 @@ def compute_far_frr(scores, labels, threshold):
     tn, fp, fn, tp = confusion_matrix(labels, predictions).ravel()
     far = fp / (fp + tn)
     frr = fn / (fn + tp)
-    return far, frr
+    acc = np.mean(np.array(predictions) == np.array(labels))
+    return far, frr, acc
