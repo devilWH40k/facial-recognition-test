@@ -5,7 +5,6 @@ Project created in research purposes to evaluate a couple of face recognition mo
 My dataset is available **[here][dataset]**.
 
 ## Setup
----
 
 Set up virtual env:
 ```
@@ -24,9 +23,8 @@ pip install -r requirements.txt
 ```
 
 ## Run experiments
----
 Make sure to have a dataset in the `./dataset` location,
-which contains subdirectories representing speakers, which
+which contains subdirectories representing persons, which
 contain image files with following extensions: "jpg", "png", "jpeg", "jfif".
 
 The the experiments can be run using the following command:
