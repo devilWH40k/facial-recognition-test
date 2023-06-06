@@ -16,7 +16,6 @@ class FaceModel:
         print("evaluating", self.model_name, "...")
         scores = []
         labels = []
-        failed_files = {}
 
         for file_path1, file_path2 in tqdm.tqdm(data, total=len(data)):
             try:
@@ -31,22 +30,8 @@ class FaceModel:
                 scores.append(similarity)
                 labels.append(label)
 
-                # delete later!!!
-                if result["verified"] != bool(label):
-                    if file_path1 not in failed_files.keys():
-                        failed_files[file_path1] = 1
-                    else:
-                        failed_files[file_path1] += 1
-
-                    if file_path2 not in failed_files.keys():
-                        failed_files[file_path2] = 1
-                    else:
-                        failed_files[file_path2] += 1
             except Exception as e:
                 print(e, file_path1, file_path2)
-            
-        for key, value in failed_files.items():
-            print("[File]:", key, "failed ", value, "time(s)")
 
         result = self.calculate_metrics(scores, labels)
         return result
